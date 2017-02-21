@@ -1,0 +1,6 @@
+numpy
+TA-Lib
+apscheduler
+psycopg2
+dotenv
+

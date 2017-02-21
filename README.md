@@ -12,7 +12,10 @@ Algobot repeatedly monitors the charts at set timeframes looking for MACD crosso
 2. Install Boost 1.54 (Follow the third comment here: https://stackoverflow.com/questions/12578499/how-to-install-boost-on-ubuntu)
 3. Follow installation instructions for the python-forexconnect API (https://github.com/neka-nat/python-forexconnect)
 4. Install PostgreSQL
-5. Configure Algobot in `config.py`
+5. Clone this project `git clone https://github.com/spencerldixon/algobot.git`
+6. `cd algobot`
+7. Install the packages `pip install -r requirements.txt`
+8. Create a `.env` and fill out the environment variables (these can be found at the top of `algo.py`)
 
 ## Configuration
 
