@@ -1,13 +1,16 @@
 import numpy as np
 import pandas as pd
-#import time
 from datetime import datetime, timedelta
-#import forexconnect as fc
-# import psycopg2 as psql
-#import settings
+import forexconnect as fc
+import settings
 
 # Clients
-fxcm            = fc.ForexConnectClient(fxcm_username, fxcm_password, fxcm_account)
+fxcm            = fc.ForexConnectClient(
+                    settings.FXCM_USERNAME,
+                    settings.FXCM_PASSWORD,
+                    settings.FXCM_ACCOUNT
+                    )
+
 # conn        = psql.connect(database=pg_database, user=pg_username, password=pg_password, host=pg_host, port=pg_port)
 
 def get_chart(currency_pair):
