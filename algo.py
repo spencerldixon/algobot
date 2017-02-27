@@ -1,72 +1,67 @@
 import numpy as np
-import talib as ta
-import time
-from apscheduler.scheduler import Scheduler
-import forexconnect as fc
-import psycopg2 as psql
-
-
-import dotenv
-
-# Variables
-dotenv.load()
-fxcm_username   = dotenv.get('FXCM_USERNAME',   default='123456789')
-fxcm_password   = dotenv.get('FXCM_PASSWORD',   default='password123')
-fxcm_account    = dotenv.get('FXCM_ACCOUNT',    default='Real')
-pg_database     = dotenv.get('PG_DATABASE',     default='algodb')
-pg_username     = dotenv.get('PG_USERNAME',     default='postgres')
-pg_password     = dotenv.get('PG_PASSWORD',     default='pass1234')
-pg_host         = dotenv.get('PG_HOST',         default='127.0.0.1')
-pg_port         = dotenv.get('PG_POST',         default='5432')
-
-print(fxcm_username)
-
-# Config
-currencies  = ["GBP/USD", "NZD/CAD"]
-time_frames = ["1d", "8hr", "2hr"]
+import pandas as pd
+#import time
+from datetime import datetime, timedelta
+#import forexconnect as fc
+# import psycopg2 as psql
+#import settings
 
 # Clients
-fxcm        = fc.ForexConnectClient(fxcm_username, fxcm_password, fxcm_account)
-conn        = psql.connect(database="algodb", user="postgres", password="pass123", host="127.0.0.1", port="5432")
+fxcm            = fc.ForexConnectClient(fxcm_username, fxcm_password, fxcm_account)
+# conn        = psql.connect(database=pg_database, user=pg_username, password=pg_password, host=pg_host, port=pg_port)
 
-def get_chart(currency_pair, time_frame):
-    # Get the chart data for the particular time frame
+def get_chart(currency_pair):
+    # Get the last days worth of tick data, fit to pandas dataframe, resample to size
+    now         = datetime.now()
+    then        = now - datetime.timedelta(days = 1)
+    data        = client.get_historical_prices(currency_pair, then, now)
+    attributes  = ['date', 'open', 'high', 'low', 'close']
+    dataframe   = pd.DataFrame([[getattr(i, j) for j in attributes] for i in data], columns = attributes)
 
-def strategy(currency_pair, time_frame):
-    chart       = get_chart(currency_pair, time_frame)
-    snapshot    = find_last_snapshot(currency_pair, time_frame)
+    print(dataframe.to_string())
+
+    # Resample the chart to 2hr or whatever and trim the data
+    # (the idea is that the beginning of the chart is the last timeframe (old MACD) the end is the latest timeframe (new MACD)
+    # Get the MACD
+    # Figure out if the MACD at the beginning is different to the MACD at the end of the timetrame
+
+
+
+
+# def strategy(currency_pair, time_frame):
+    # chart       = get_chart(currency_pair, time_frame)
+    # snapshot    = get_chart_at(currency_pair, time_frame, )
     # get the chart data from FXCM
+    # Drop the most recent bar (as it is still being formed and represents incomplete data)
     # If trade with currency pair and time frame exists in DB, then pull it out
         # Compare to see if macd has crossed
             # If it has, send an alert and update the record, waiting for it to cross back
-            update_snapshot(snapshot, )
-            send_alert("MACD has crossed on the {0} chart on {1}. You might want to check this out to see if it is a valid entry".format(time_frame, currency_pair))
+            # update_snapshot(snapshot, )
+            # send_alert("MACD has crossed on the {0} chart on {1}. You might want to check this out to see if it is a valid entry".format(time_frame, currency_pair))
         # Else update the last checked at timestamp and do nothing
     # Else if no trade exists, create it
 
-def apply_strategy_to_all_currencies(currencies, time_frame):
-    for currency in currencies:
-        strategy(currency, time_frame)
+# def apply_strategy_to_all_currencies(currencies, time_frame):
+    # for currency in currencies:
+        # strategy(currency, time_frame)
 
 # Snapshots API
 
-def create_snapshot():
-    cur = conn.cursor()
-    cur.execute("INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) \
-            VALUES (1, 'Paul', 32, 'California', 20000.00)");
-    conn.commit()
+# def create_snapshot():
 
-def find_last_snapshot(currency_pair, time_frame):
-    cur = conn.cursor()
+# def find_last_snapshot(currency_pair, time_frame):
+    # cur = conn.cursor()
 
 # Alerts
-
-def send_alert(message):
+def send_alert(msg):
     # Post the message to endpoint or email or something or other
+    print msg
 
-# Schedule when to run strategy and run it
-scheduler = BlockingScheduler()
-scheduler.add_job(apply_strategy_to_all_currencies(currencies, "1d")), 'cron', day_of_week='mon-fri', hour=8)
-scheduler.add_job(apply_strategy_to_all_currencies(currencies, "8hr")), 'interval', hours=8)
-scheduler.add_job(apply_strategy_to_all_currencies(currencies, "2hr")), 'interval', hours=2)
-scheduler.start()
+if __name__ == '__main__':
+    get_chart("GBP/USD")
+    # from apscheduler.schedulers.blocking import BlockingScheduler
+    # sched = BlockingScheduler(timezone='GMT')
+    # sched.add_job(send_alert, 'interval', ["Every second!"],  seconds=1)
+    # sched.add_job(send_alert, 'interval', ["Hello world!"],  seconds=5)
+    # sched.start()
+
