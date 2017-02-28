@@ -23,6 +23,8 @@ def get_chart(currency_pair):
 
     print(dataframe.to_string())
 
+    dataframe.resample('10Min').agg({'open': 'first', 'high': 'max', 'low': 'min', 'close': 'last'})
+
     # Resample the chart to timeframe, the idea is last time period should be at the beginning and newest at the end
     # This way we can check MACD at beginning is different to end MACD
     # Augment the chart by adding a column for MACD position, and other indicators I guess
