@@ -23,9 +23,9 @@ def get_chart(currency_pair):
 
     print(dataframe.to_string())
 
-    # Resample the chart to 2hr or whatever and trim the data
-    # (the idea is that the beginning of the chart is the last timeframe (old MACD) the end is the latest timeframe (new MACD)
-    # Get the MACD
+    # Resample the chart to timeframe, the idea is last time period should be at the beginning and newest at the end
+    # This way we can check MACD at beginning is different to end MACD
+    # Augment the chart by adding a column for MACD position, and other indicators I guess
     # Figure out if the MACD at the beginning is different to the MACD at the end of the timetrame
 
 
